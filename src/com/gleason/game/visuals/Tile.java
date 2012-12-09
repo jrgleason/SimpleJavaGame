@@ -9,6 +9,9 @@ public class Tile {
 	private int tileX, tileY, speedX;
 	private TileType type;
     public Image tileImage;
+    
+    public static final int WIDTH = 40;
+    public static final int HEIGHT = 40;
 
     private Background bg = StartingClass.getBg1();
     
@@ -42,9 +45,13 @@ public class Tile {
     	}
     }
     
+//    public double getLeftBound(){
+//    	
+//    }
+    
     public Tile(int x, int y, TileType type) {
-        tileX = x * 40;
-        tileY = y * 40;
+        tileX = x * WIDTH;
+        tileY = y * HEIGHT;
 
         this.type = type;
         if(type != null){

@@ -164,12 +164,15 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	private boolean checkTiles(){
 		boolean returnValue = false;
-		for(Tile t : tilearray){
-			if(t.getTileX() <= myBot.getRightEdge() && (t.getTileX()+t.WIDTH) >= myBot.getRightEdge()){
-				return true;
-			}
-					
-		}
+//		for(Tile t : tilearray){
+//			if(
+//					(t.getTileX() <= myBot.getRightEdge() && (t.getTileX()+t.WIDTH) >= myBot.getRightEdge()))
+//					&& (t.getTileY())
+//			{
+//				return true;
+//			}
+//					
+//		}
 		return returnValue;
 	}
 	
