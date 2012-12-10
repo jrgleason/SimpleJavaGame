@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="" href="">
+    <information>
+        <title>Dynamic Tree Demo</title>
+        <vendor>Dynamic Team</vendor>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+            href="http://java.sun.com/products/autodl/j2se" />
+        <jar href="./target/javagame-1.0.0-SNAPSHOT.jar" main="true" />
+
+    </resources>
+    <applet-desc 
+         name="Dynamic Tree Demo Applet"
+         main-class="com.gleason.game.StartingClass"
+         width="640"
+         height="480">
+     </applet-desc>
+     <update check="background"/>
+</jnlp> 
