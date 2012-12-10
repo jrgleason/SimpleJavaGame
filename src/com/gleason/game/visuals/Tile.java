@@ -1,8 +1,10 @@
 package com.gleason.game.visuals;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 
 import com.gleason.game.StartingClass;
+import com.gleason.game.characters.Robot;
 import com.gleason.game.environment.Background;
 
 public class Tile {
@@ -59,6 +61,8 @@ public class Tile {
         }
     }
     
+    
+    boolean up = false;
     public void update() {
         // TODO Auto-generated method stub
     	switch(this.type){
@@ -109,5 +113,24 @@ public class Tile {
 	}
 	public void setBg(Background bg) {
 		this.bg = bg;
+	}
+	
+	public int getLeftBound(){
+		return getTileX();
+	}
+	public int getRightBound(){
+		return getLeftBound()+WIDTH;
+	}
+	public int getBottomBound(){
+		int test = getTopBound()+HEIGHT;
+		return test;
+	}
+	public int getTopBound(){
+		int test = getTileY();
+		return getTileY();
+		
+	}
+	public Rectangle getBounds() {
+	    return new Rectangle(getLeftBound(), getTopBound(), WIDTH, HEIGHT);
 	}
 }

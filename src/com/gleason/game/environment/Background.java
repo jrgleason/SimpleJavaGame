@@ -2,6 +2,7 @@ package com.gleason.game.environment;
 
 public class Background {
 	private int bgX, bgY, speedX;
+	public static final int BG_HEIGHT = 480;
 
 	public Background(int x, int y) {
 		bgX = x;

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
@@ -145,6 +146,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 					}
 				}
 			}
+			checkTiles();
 			updateTiles();
 			for (Enemy e : enemies) {
 				e.update();
@@ -162,18 +164,32 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 	}
 
-	private boolean checkTiles(){
-		boolean returnValue = false;
-//		for(Tile t : tilearray){
-//			if(
-//					(t.getTileX() <= myBot.getRightEdge() && (t.getTileX()+t.WIDTH) >= myBot.getRightEdge()))
-//					&& (t.getTileY())
-//			{
-//				return true;
-//			}
-//					
-//		}
-		return returnValue;
+//	public boolean robotLeftBetweenTile(Tile t){
+//		return (myBot.getLeftBound() > t.getLeftBound())&&(myBot.getLeftBound()<t.getRightBound());
+//	}
+	public boolean robotRightBetweenTile(Tile t){
+		return (myBot.getRightBound() > t.getLeftBound())&&(myBot.getRightBound()<t.getRightBound());
+	}
+	public boolean robotBottomBetweenTile(Tile t){ 
+		return (t.getBottomBound()<myBot.getBottomBound())&&(t.getBottomBound() > myBot.getTopBound());
+	}
+	public boolean robotTopBetweenTile(Tile t){
+		return (t.getTopBound()<myBot.getBottomBound())&&(t.getTopBound()>myBot.getTopBound());
+	}
+	
+	public void checkTiles(){
+		for(Tile t : tilearray){
+			Rectangle r1 = t.getBounds();
+			Rectangle r2 = myBot.getRightBounds();
+			Rectangle r3 = myBot.getBottomBounds();
+			if(r1.intersects(r2)){
+				myBot.onCollisionX(); 
+			}
+			else if(r1.intersects(r3)){
+				myBot.onCollisionY();
+				myBot.setSpeedY(+3);
+			}
+		}
 	}
 	
 	@Override
@@ -193,17 +209,15 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			break;
 
 		case KeyEvent.VK_LEFT:
-			if(!checkTiles()){
-				myBot.moveLeft();
-				myBot.setMovingLeft(true);
-			}
+			myBot.moveLeft();
+		    myBot.setMovingLeft(true);
 			break;
 
 		case KeyEvent.VK_RIGHT:
-			if(!checkTiles()){
+			//if(!checkTiles()){
 				myBot.moveRight();
 				myBot.setMovingRight(true);
-			}
+			//}
 			break;
 
 		case KeyEvent.VK_SPACE:

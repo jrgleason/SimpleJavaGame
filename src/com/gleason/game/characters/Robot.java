@@ -1,5 +1,6 @@
 package com.gleason.game.characters;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import com.gleason.game.StartingClass;
@@ -11,8 +12,11 @@ public class Robot {
 	
 	static final int JUMPSPEED = -15;
 	static final int MOVESPEED = 5;
-	static final int GROUND = 382;
-	static final int COLLISION_BOX_WIDTH = 40;
+	public static final int HEIGHT = 126;
+	public static final int WIDTH = 122;
+	static final int COLLISION_BOX_WIDTH = WIDTH;
+	
+	public static final int GROUND = Background.BG_HEIGHT-Tile.HEIGHT-(HEIGHT/2);
 	
 	private int centerX = 100;
 	private int centerY = GROUND;
@@ -23,6 +27,7 @@ public class Robot {
 	
 	private static Background bg1 = StartingClass.getBg1();                 
     private static Background bg2 = StartingClass.getBg2();
+   
 
 	private int speedX = 0;
 	private int speedY = 1;
@@ -35,7 +40,7 @@ public class Robot {
 				
 	}
 	public double getRightEdge(){
-		return centerX - (.5*COLLISION_BOX_WIDTH);
+		return centerX + (.5*COLLISION_BOX_WIDTH);
 				
 	}
 	
@@ -51,6 +56,26 @@ public class Robot {
 			centerX = 61;
 		}
 	}
+	
+	private static int BOX_OFFSET = 5;
+	private static int SQUEEZE_OFFSET=10;
+	
+	public Rectangle getLeftBounds() {
+		
+		int test1 = HEIGHT-(BOX_OFFSET*2);
+	    return new Rectangle(getLeftBound(), getTopBound()-BOX_OFFSET, BOX_OFFSET, HEIGHT-SQUEEZE_OFFSET);
+	}
+	public Rectangle getRightBounds() {
+		
+		int test1 = HEIGHT-(BOX_OFFSET*2);
+	    return new Rectangle(getRightBound()-BOX_OFFSET, getTopBound()-SQUEEZE_OFFSET, BOX_OFFSET, HEIGHT-(2*SQUEEZE_OFFSET));
+	}
+	
+	public Rectangle getBottomBounds() {
+		int test1 = HEIGHT-(BOX_OFFSET*2);
+	    return new Rectangle(getLeftBound()+SQUEEZE_OFFSET, getBottomBound()-BOX_OFFSET, WIDTH-(SQUEEZE_OFFSET*2), BOX_OFFSET);
+	}
+	
 	
 	private void setSpeed(){
 		if (speedX < 0) {
@@ -69,6 +94,17 @@ public class Robot {
 		}
 	}
 
+	public void onCollisionX(){
+		speedX = 0;
+		centerX--;
+	}
+	
+	public void onCollisionY(){
+		speedY = 0;
+		centerY--;
+		jumped = false;
+	}
+	
 	private void doJump() {
 		// Handles Jumping
 		if (jumped == true) {
@@ -196,5 +232,20 @@ public class Robot {
 
 	public void setDucked(boolean ducked) {
 		this.ducked = ducked;
+	}
+	public int getLeftBound(){
+		int test = getCenterX()-(WIDTH/2);
+		return test;
+	}
+	public int getRightBound(){
+		return getLeftBound()+WIDTH;
+	}
+	public int getBottomBound(){
+		int test = getCenterY()+(HEIGHT/2);
+		return test;
+	}
+	public int getTopBound(){
+		int test = getBottomBound()-HEIGHT;
+		return test;
 	}
 }
