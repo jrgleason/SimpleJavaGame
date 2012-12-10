@@ -1,6 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.gleason.javagame</groupId>
+  <groupId>com.gleason.game</groupId>
   <artifactId>javagame</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 </project>
