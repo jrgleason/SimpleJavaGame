@@ -126,7 +126,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		thread.start();
 	}
 
-	@Override
+	//@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while (true) {
@@ -192,7 +192,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 	}
 	
-	@Override
+	//@Override
 	public void keyPressed(KeyEvent e) {
 
 		switch (e.getKeyCode()) {
@@ -233,7 +233,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	}
 
-	@Override
+	//@Override
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
@@ -259,7 +259,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	}
 
-	@Override
+	//@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
