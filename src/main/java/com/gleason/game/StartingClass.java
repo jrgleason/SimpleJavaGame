@@ -128,10 +128,34 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		thread.start();
 	}
 
+	private void isEnemyHit(Enemy e, Projectile p){
+		Rectangle projBounds = p.getBounds();
+		Rectangle enemBounds = e.getBounds();
+		if(projBounds != null && enemBounds != null){
+			if(projBounds.intersects(enemBounds)){
+				e.onCollisionX(p);
+				p.onCollisionX(e);
+			}
+		}
+	}
+	
+	private boolean isHeroHit(Enemy e){
+		boolean returnValue = false;
+		Rectangle robotBounds = myBot.getBounds();
+		Rectangle enemyBounds = e.getBounds();
+		if(robotBounds.intersects(enemyBounds)){
+			if(e.isAlive()){
+				myBot.setAlive(false);
+				returnValue = true;
+			}
+		}
+		return returnValue;
+	}
+	
 	// @Override
 	public void run() {
 		// TODO Auto-generated method stub
-		while (true) {
+		while (myBot.isAlive()) {
 			myBot.update();
 			if (myBot.isJumped()) {
 				currentSprite = characterJumped;
@@ -140,6 +164,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			}
 			for (Projectile p : myBot.getProjectiles()) {
 				if (p.isVisible() == true) {
+					for (Enemy e : enemies) {
+						isEnemyHit(e, p);
+					}
 					p.update();
 				} else {
 					if (myBot.getProjectiles().indexOf(p) != -1) {
@@ -151,6 +178,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 			checkForFloat();
 			updateTiles();
 			for (Enemy e : enemies) {
+				isHeroHit(e);
 				e.update();
 			}
 			bg1.update();
@@ -164,6 +192,8 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 				e.printStackTrace();
 			}
 		}
+		myBot.setAlive(true);
+		this.start();
 	}
 
 	private boolean isFloating = false;
@@ -304,7 +334,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 		for (Projectile p : myBot.getProjectiles()) {
 			g.setColor(Color.YELLOW);
-			g.fillRect(p.getX(), p.getY(), 10, 5);
+			g.fillRect(p.getX(), p.getY(), Projectile.WIDTH, Projectile.HEIGHT);
+			g.setColor(Color.RED);
+			g.drawRect(p.getBounds().x, p.getBounds().y, p.getBounds().width, p.getBounds().height);
 		}
 
 		g.drawImage(currentSprite, myBot.getCenterX() - 61,
@@ -327,8 +359,12 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 //		g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
 		//END Collision Boxes
 		for (Enemy e : enemies) {
-			g.drawImage(hanim.getImage(), e.getxLocation() - 48,
+			if(e.isAlive()){
+				g.drawImage(hanim.getImage(), e.getxLocation() - 48,
 					e.getyLocation() - 48, this);
+			}
+//			g.setColor(Color.RED);
+//			g.drawRect(e.getBounds().x, e.getBounds().y, e.getBounds().width, e.getBounds().height);
 		}
 
 	}

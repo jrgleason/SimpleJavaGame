@@ -6,8 +6,9 @@ import java.awt.Rectangle;
 import com.gleason.game.StartingClass;
 import com.gleason.game.characters.Robot;
 import com.gleason.game.environment.Background;
+import com.gleason.game.util.Collidable;
 
-public class Tile {
+public class Tile implements Collidable{
 	private int tileX, tileY, speedX;
 	private TileType type;
 	public Image tileImage;
@@ -77,13 +78,13 @@ public class Tile {
 				//TODO: How do we handle hitting your head?
 			}
 			else if (r1.intersects(r2) ) {
-				myBot.onCollisionX();
+				myBot.onCollisionX(this);
 			} 
 			else if( r1.intersects(r4)){
-				myBot.onCollisionX();
+				myBot.onCollisionX(this);
 			}
 			else if (r1.intersects(r3)) {
-				myBot.onCollisionY();
+				myBot.onCollisionY(this);
 			}
 		}
 	}
@@ -171,5 +172,15 @@ public class Tile {
 
 	public Rectangle getBounds() {
 		return new Rectangle(getLeftBound(), getTopBound(), WIDTH, HEIGHT);
+	}
+
+	public void onCollisionX(Collidable aggressor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onCollisionY(Collidable aggressor) {
+		// TODO Auto-generated method stub
+		
 	}
 }

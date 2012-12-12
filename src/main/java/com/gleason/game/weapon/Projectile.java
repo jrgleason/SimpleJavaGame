@@ -1,10 +1,17 @@
 package com.gleason.game.weapon;
 
-public class Projectile {
+import java.awt.Rectangle;
+
+import com.gleason.game.characters.Enemy;
+import com.gleason.game.util.Collidable;
+
+public class Projectile implements Collidable{
 
 	private int x, y, speedX;
 	private boolean visible;
-	
+	public static int HEIGHT = 5;
+	public static int WIDTH=10;
+	private boolean used = false;
 	
 	public Projectile(int startX, int startY){
 		x = startX;
@@ -51,6 +58,26 @@ public class Projectile {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	public void onCollisionX(Collidable aggressor) {
+		// TODO Auto-generated method stub
+	}
+
+	public void onCollisionY(Collidable aggressor) {
+	}
+
+	public Rectangle getBounds() {
+		// TODO Auto-generated method stub
+		return new Rectangle(getX(),getY(),WIDTH, HEIGHT);
+	}
+
+	public boolean isUsed() {
+		return used;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
 	}
 	
 }

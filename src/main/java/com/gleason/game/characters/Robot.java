@@ -5,10 +5,12 @@ import java.util.ArrayList;
 
 import com.gleason.game.StartingClass;
 import com.gleason.game.environment.Background;
+import com.gleason.game.util.Collidable;
 import com.gleason.game.visuals.Tile;
 import com.gleason.game.weapon.Projectile;
+import com.sun.media.sound.EmergencySoundbank;
 
-public class Robot {
+public class Robot implements Collidable{
 
 	static final int JUMPSPEED = -15;
 	static final int MOVESPEED = 5;
@@ -26,6 +28,7 @@ public class Robot {
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
 	private boolean ducked = false;
+	private boolean alive = true;
 
 	private static Background bg1 = StartingClass.getBg1();
 	private static Background bg2 = StartingClass.getBg2();
@@ -68,7 +71,7 @@ public class Robot {
 	private boolean falling = false;
 
 	public void killPlayer(){
-		String test = "Dead";
+		setAlive(false);
 	}
 	
 	public Rectangle getLeftBounds() {
@@ -101,6 +104,10 @@ public class Robot {
 		// return new Rectangle(getLeftBound(),getTopBound(),HEIGHT,WIDTH);
 		return new Rectangle(getLeftBound(), getTopBound(), WIDTH, HEIGHT);
 	}
+	
+	public Rectangle getBounds(){
+		return getFullBounds();
+	}
 
 	private void setSpeed() {
 		if (speedX < 0) {
@@ -119,13 +126,18 @@ public class Robot {
 		}
 	}
 
-	public void onCollisionX() {
-		speedX = 0;
-		centerX = centerX - MOVESPEED;
-		String test = "";
+	public void onCollisionX(Collidable aggressor) {
+		if(aggressor instanceof Tile){
+			speedX = 0;
+			centerX = centerX - MOVESPEED;
+			String test = "";
+		}
+		else if(aggressor instanceof Enemy){
+			this.setAlive(false);
+		}
 	}
 
-	public void onCollisionY() {
+	public void onCollisionY(Collidable aggressor) {
 		speedY = 0;
 		centerY--;
 		jumped = false;
@@ -292,5 +304,13 @@ public class Robot {
 
 	public void setFalling(boolean falling) {
 		this.falling = falling;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 }
