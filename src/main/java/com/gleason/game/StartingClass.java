@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import sun.org.mozilla.javascript.internal.Node.Jump;
+
 import com.gleason.game.characters.Enemy;
 import com.gleason.game.characters.HellBoy;
 import com.gleason.game.characters.Robot;
@@ -126,7 +128,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		thread.start();
 	}
 
-	//@Override
+	// @Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while (true) {
@@ -146,7 +148,6 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 					}
 				}
 			}
-			checkTiles();
 			updateTiles();
 			for (Enemy e : enemies) {
 				e.update();
@@ -164,35 +165,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 	}
 
-//	public boolean robotLeftBetweenTile(Tile t){
-//		return (myBot.getLeftBound() > t.getLeftBound())&&(myBot.getLeftBound()<t.getRightBound());
-//	}
-	public boolean robotRightBetweenTile(Tile t){
-		return (myBot.getRightBound() > t.getLeftBound())&&(myBot.getRightBound()<t.getRightBound());
-	}
-	public boolean robotBottomBetweenTile(Tile t){ 
-		return (t.getBottomBound()<myBot.getBottomBound())&&(t.getBottomBound() > myBot.getTopBound());
-	}
-	public boolean robotTopBetweenTile(Tile t){
-		return (t.getTopBound()<myBot.getBottomBound())&&(t.getTopBound()>myBot.getTopBound());
-	}
-	
-	public void checkTiles(){
-		for(Tile t : tilearray){
-			Rectangle r1 = t.getBounds();
-			Rectangle r2 = myBot.getRightBounds();
-			Rectangle r3 = myBot.getBottomBounds();
-			if(r1.intersects(r2)){
-				myBot.onCollisionX(); 
-			}
-			else if(r1.intersects(r3)){
-				myBot.onCollisionY();
-				myBot.setSpeedY(+3);
-			}
-		}
-	}
-	
-	//@Override
+	// @Override
 	public void keyPressed(KeyEvent e) {
 
 		switch (e.getKeyCode()) {
@@ -210,14 +183,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 		case KeyEvent.VK_LEFT:
 			myBot.moveLeft();
-		    myBot.setMovingLeft(true);
+			myBot.setMovingLeft(true);
 			break;
 
 		case KeyEvent.VK_RIGHT:
-			//if(!checkTiles()){
-				myBot.moveRight();
-				myBot.setMovingRight(true);
-			//}
+			// if(!checkTiles()){
+			myBot.moveRight();
+			myBot.setMovingRight(true);
+			// }
 			break;
 
 		case KeyEvent.VK_SPACE:
@@ -233,7 +206,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	}
 
-	//@Override
+	// @Override
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
@@ -259,7 +232,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	}
 
-	//@Override
+	// @Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
@@ -285,7 +258,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	private void updateTiles() {
 		for (Tile t : tilearray) {
-			t.update();
+			t.update(myBot);
 		}
 	}
 
@@ -309,6 +282,23 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 		g.drawImage(currentSprite, myBot.getCenterX() - 61,
 				myBot.getCenterY() - 63, this);
+		
+		//DRAW COLLISION BOXES
+		//TODO: Remove
+		Rectangle rightBounds = myBot.getRightBounds();
+		Rectangle leftBounds = myBot.getLeftBounds();
+		Rectangle bottomBounds = myBot.getBottomBounds();
+		Rectangle innerRightBound = myBot.getInnerRightBounds();
+		Rectangle topBound = myBot.getTopBounds();
+		g.setColor(Color.RED);
+		g.drawRect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
+		g.setColor(Color.GREEN);
+		g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
+		g.setColor(Color.BLACK);
+		g.drawRect(innerRightBound.x, innerRightBound.y, innerRightBound.width, innerRightBound.height);
+		g.setColor(Color.YELLOW);
+		g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
+		//END Collision Boxes
 		for (Enemy e : enemies) {
 			g.drawImage(hanim.getImage(), e.getxLocation() - 48,
 					e.getyLocation() - 48, this);
@@ -345,8 +335,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 				if (i < line.length()) {
 					char ch = line.charAt(i);
-					TileType type = TileType.getByOrdinal(Character.getNumericValue(ch));
-					if(type != null){
+					TileType type = TileType.getByOrdinal(Character
+							.getNumericValue(ch));
+					if (type != null) {
 						Tile t = new Tile(i, j, type);
 						tilearray.add(t);
 					}

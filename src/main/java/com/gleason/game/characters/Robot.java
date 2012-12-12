@@ -13,10 +13,12 @@ public class Robot {
 	static final int JUMPSPEED = -15;
 	static final int MOVESPEED = 5;
 	public static final int HEIGHT = 126;
-	public static final int WIDTH = 122;
+	public static final int WIDTH = 120;
 	static final int COLLISION_BOX_WIDTH = WIDTH;
 	
 	public static final int GROUND = Background.BG_HEIGHT-Tile.HEIGHT-(HEIGHT/2);
+	//public static final int GROUND = 382;
+	
 	
 	private int centerX = 100;
 	private int centerY = GROUND;
@@ -46,9 +48,11 @@ public class Robot {
 	
 	public void update() {
 		setSpeed();
-		centerY += speedY;
 		if (centerY + speedY >= GROUND) {
 			centerY = GROUND;
+		}
+		else{
+			centerY += speedY;
 		}
 		doJump();
 		// Prevents going beyond X coordinate of 0
@@ -58,22 +62,30 @@ public class Robot {
 	}
 	
 	private static int BOX_OFFSET = 5;
-	private static int SQUEEZE_OFFSET=10;
+	private static int TOP_TO_ARM=33;
+	private static int ARM_HEIGHT=20;
+	private static int DISTANCE_TO_FEET = 25;
+	private static int DISTANCE_TO_HEAD = 40;
 	
 	public Rectangle getLeftBounds() {
-		
-		int test1 = HEIGHT-(BOX_OFFSET*2);
-	    return new Rectangle(getLeftBound(), getTopBound()-BOX_OFFSET, BOX_OFFSET, HEIGHT-SQUEEZE_OFFSET);
+	    return new Rectangle(getLeftBound(), getTopBound()+TOP_TO_ARM, BOX_OFFSET, ARM_HEIGHT);
 	}
 	public Rectangle getRightBounds() {
-		
-		int test1 = HEIGHT-(BOX_OFFSET*2);
-	    return new Rectangle(getRightBound()-BOX_OFFSET, getTopBound()-SQUEEZE_OFFSET, BOX_OFFSET, HEIGHT-(2*SQUEEZE_OFFSET));
+ 	    return new Rectangle(getRightBound()-BOX_OFFSET, getTopBound()+TOP_TO_ARM, BOX_OFFSET, ARM_HEIGHT);
+	}
+	public Rectangle getInnerRightBounds(){
+		return new Rectangle(getRightBound()-(DISTANCE_TO_FEET), getTopBound()+BOX_OFFSET, BOX_OFFSET, HEIGHT-(2*BOX_OFFSET));
+	}
+	public Rectangle getBottomBounds() {
+	    return new Rectangle(getLeftBound()+DISTANCE_TO_FEET, getBottomBound()-BOX_OFFSET, WIDTH-(DISTANCE_TO_FEET*2), BOX_OFFSET);
+	}
+	public Rectangle getTopBounds() {
+	    return new Rectangle(getLeftBound(), getTopBound(), WIDTH, BOX_OFFSET);
 	}
 	
-	public Rectangle getBottomBounds() {
-		int test1 = HEIGHT-(BOX_OFFSET*2);
-	    return new Rectangle(getLeftBound()+SQUEEZE_OFFSET, getBottomBound()-BOX_OFFSET, WIDTH-(SQUEEZE_OFFSET*2), BOX_OFFSET);
+	public Rectangle getFullBounds(){
+		//return new Rectangle(getLeftBound(),getTopBound(),HEIGHT,WIDTH);
+		return new Rectangle(getLeftBound(),getTopBound(),WIDTH,HEIGHT);
 	}
 	
 	
@@ -96,7 +108,8 @@ public class Robot {
 
 	public void onCollisionX(){
 		speedX = 0;
-		centerX--;
+		centerX = centerX - MOVESPEED;
+		String test = "";
 	}
 	
 	public void onCollisionY(){
