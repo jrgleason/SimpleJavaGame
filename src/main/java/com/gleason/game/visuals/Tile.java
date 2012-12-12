@@ -87,6 +87,13 @@ public class Tile {
 			}
 		}
 	}
+	
+	public boolean isWithinRangeX(Robot mybot){
+		if(getTileX()<mybot.getRightBound() && getTileX()+WIDTH > mybot.getLeftBound()){
+			return true;
+		}
+		return false;
+	}
 
 	public void update(Robot myBot) {
 		speedX = bg.getSpeedX() * 5;

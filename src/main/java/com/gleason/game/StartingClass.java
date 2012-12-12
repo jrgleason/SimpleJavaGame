@@ -148,6 +148,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 					}
 				}
 			}
+			checkForFloat();
 			updateTiles();
 			for (Enemy e : enemies) {
 				e.update();
@@ -165,6 +166,32 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 	}
 
+	private boolean isFloating = false;
+	
+	private boolean checkForFloat(){
+		boolean returnValue = false;
+		Rectangle bottom = myBot.getBottomBounds();
+		Rectangle augBottom = new Rectangle((int)bottom.getX(),(int)bottom.getY()+10, bottom.width, bottom.height);
+		Boolean tileIntersects = false;
+		for(Tile t : tilearray){
+			
+			Rectangle tileBorder = t.getBounds();
+			if(tileBorder.intersects(augBottom)){
+				tileIntersects = true;
+				isFloating = false;
+				myBot.setFalling(false);
+			}
+		}
+		if(!tileIntersects && !myBot.isJumped()){
+			//And it isn't thanks to jumping so...
+			myBot.jump(+10);
+			myBot.setFalling(true);
+			isFloating = true;
+			returnValue = true;
+		}
+		return returnValue;
+	}
+	
 	// @Override
 	public void keyPressed(KeyEvent e) {
 
@@ -285,19 +312,19 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		
 		//DRAW COLLISION BOXES
 		//TODO: Remove
-		Rectangle rightBounds = myBot.getRightBounds();
-		Rectangle leftBounds = myBot.getLeftBounds();
-		Rectangle bottomBounds = myBot.getBottomBounds();
-		Rectangle innerRightBound = myBot.getInnerRightBounds();
-		Rectangle topBound = myBot.getTopBounds();
-		g.setColor(Color.RED);
-		g.drawRect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
-		g.setColor(Color.GREEN);
-		g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
-		g.setColor(Color.BLACK);
-		g.drawRect(innerRightBound.x, innerRightBound.y, innerRightBound.width, innerRightBound.height);
-		g.setColor(Color.YELLOW);
-		g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
+//		Rectangle rightBounds = myBot.getRightBounds();
+//		Rectangle leftBounds = myBot.getLeftBounds();
+//		Rectangle bottomBounds = myBot.getBottomBounds();
+//		Rectangle innerRightBound = myBot.getInnerRightBounds();
+//		Rectangle topBound = myBot.getTopBounds();
+//		g.setColor(Color.RED);
+//		g.drawRect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
+//		g.setColor(Color.GREEN);
+//		g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
+//		g.setColor(Color.BLACK);
+//		g.drawRect(innerRightBound.x, innerRightBound.y, innerRightBound.width, innerRightBound.height);
+//		g.setColor(Color.YELLOW);
+//		g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
 		//END Collision Boxes
 		for (Enemy e : enemies) {
 			g.drawImage(hanim.getImage(), e.getxLocation() - 48,
