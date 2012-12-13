@@ -17,6 +17,23 @@ public class Robot implements Collidable{
 	public static final int HEIGHT = 126;
 	public static final int WIDTH = 120;
 	static final int COLLISION_BOX_WIDTH = WIDTH;
+	private long points = 0;
+	private boolean levelFinished = false;
+	
+	public void addPoint(){
+		points++;
+	}
+	
+	public long getScore(){
+		return points;
+	}
+	
+	public void levelFinished(){
+		levelFinished = true;
+	}
+	public boolean isLevelFinished(){
+		return levelFinished;
+	}
 
 	public static final int GROUND = Background.BG_HEIGHT - Tile.HEIGHT
 			- (HEIGHT / 2);
@@ -128,9 +145,15 @@ public class Robot implements Collidable{
 
 	public void onCollisionX(Collidable aggressor) {
 		if(aggressor instanceof Tile){
-			speedX = 0;
-			centerX = centerX - MOVESPEED;
-			String test = "";
+			Tile t = (Tile) aggressor;
+			if(t.getType().equals(Tile.TileType.FINISH_LINE)){
+				
+			}
+			else{
+				speedX = 0;
+				centerX = centerX - MOVESPEED;
+				String test = "";
+			}
 		}
 		else if(aggressor instanceof Enemy){
 			this.setAlive(false);
@@ -138,9 +161,18 @@ public class Robot implements Collidable{
 	}
 
 	public void onCollisionY(Collidable aggressor) {
-		speedY = 0;
-		centerY--;
-		jumped = false;
+		if(aggressor instanceof Tile){
+			Tile t = (Tile) aggressor;
+			if(t.getType().equals(Tile.TileType.FINISH_LINE)){
+				
+			}
+			else{
+				speedY = 0;
+				centerY--;
+				jumped = false;
+			}
+		}
+		
 	}
 
 	private void doJump() {
@@ -207,7 +239,7 @@ public class Robot implements Collidable{
 	}
 
 	public void shoot() {
-		Projectile p = new Projectile(centerX + 50, centerY - 25);
+		Projectile p = new Projectile(centerX + 50, centerY - 25,this);
 		projectiles.add(p);
 	}
 

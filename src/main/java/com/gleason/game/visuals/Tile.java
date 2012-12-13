@@ -7,6 +7,7 @@ import com.gleason.game.StartingClass;
 import com.gleason.game.characters.Robot;
 import com.gleason.game.environment.Background;
 import com.gleason.game.util.Collidable;
+import com.gleason.game.weapon.Projectile;
 
 public class Tile implements Collidable{
 	private int tileX, tileY, speedX;
@@ -19,11 +20,13 @@ public class Tile implements Collidable{
 	private Background bg = StartingClass.getBg1();
 
 	public enum TileType {
-		OCEAN(StartingClass.tileocean, 1), GROUND(StartingClass.tiledirt, 5), GRASS_RIGHT(
-				StartingClass.tilegrassRight, 6), GRASS_LEFT(
-				StartingClass.tilegrassLeft, 4), GRASS_TOP(
-				StartingClass.tilegrassTop, 8), GRASS_BOTTOM(
-				StartingClass.tilegrassBot, 2);
+		OCEAN(StartingClass.tileocean, 1), 
+		GROUND(StartingClass.tiledirt, 5), 
+		GRASS_RIGHT(StartingClass.tilegrassRight, 6), 
+		GRASS_LEFT(StartingClass.tilegrassLeft, 4), 
+		GRASS_TOP(StartingClass.tilegrassTop, 8), 
+		GRASS_BOTTOM(StartingClass.tilegrassBot, 2),
+		FINISH_LINE(StartingClass.tileocean, 9);
 		private Image image;
 		private int ordinal;
 
@@ -76,6 +79,9 @@ public class Tile implements Collidable{
 		if (r1.y > 0) {
 			if(r1.intersects(head)){
 				//TODO: How do we handle hitting your head?
+			}
+			else if(r1.intersects(r4) && this.type.equals(TileType.FINISH_LINE)){
+				myBot.levelFinished();
 			}
 			else if (r1.intersects(r2) ) {
 				myBot.onCollisionX(this);
@@ -176,6 +182,10 @@ public class Tile implements Collidable{
 
 	public void onCollisionX(Collidable aggressor) {
 		// TODO Auto-generated method stub
+		if(aggressor instanceof Projectile){
+			Projectile p = (Projectile) aggressor;
+			p.setVisible(false);
+		}
 		
 	}
 

@@ -2,6 +2,7 @@ package com.gleason.game;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import sun.org.mozilla.javascript.internal.Node.Jump;
 
@@ -44,6 +46,8 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	private Graphics second;
 	private static Background bg1, bg2;
 	private Animation anim, hanim;
+	private static final long RANDOM_SEED = 4204201;
+	private static final Random RANDOM = new Random(RANDOM_SEED);
 
 	@Override
 	public void init() {
@@ -128,92 +132,124 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		thread.start();
 	}
 
-	private void isEnemyHit(Enemy e, Projectile p){
+	private void createEnemy() {
+		double currentChance = RANDOM.nextGaussian();
+		if (currentChance > (3)) {
+			HellBoy enemy = new HellBoy(700, 360);
+			enemies.add(enemy);
+		}
+	}
+
+	private void isEnemyHit(Enemy e, Projectile p) {
 		Rectangle projBounds = p.getBounds();
 		Rectangle enemBounds = e.getBounds();
-		if(projBounds != null && enemBounds != null){
-			if(projBounds.intersects(enemBounds)){
+		if (projBounds != null && enemBounds != null) {
+			if (projBounds.intersects(enemBounds)) {
 				e.onCollisionX(p);
 				p.onCollisionX(e);
 			}
 		}
 	}
-	
-	private boolean isHeroHit(Enemy e){
+
+	private void isTileHit(Tile t, Projectile p) {
+		Rectangle projBounds = p.getBounds();
+		Rectangle enemBounds = t.getBounds();
+		if (projBounds != null && enemBounds != null) {
+			if (projBounds.intersects(enemBounds)) {
+				t.onCollisionX(p);
+				p.onCollisionX(t);
+			}
+		}
+	}
+
+	private boolean isHeroHit(Enemy e) {
 		boolean returnValue = false;
 		Rectangle robotBounds = myBot.getBounds();
 		Rectangle enemyBounds = e.getBounds();
-		if(robotBounds.intersects(enemyBounds)){
-			if(e.isAlive()){
+		if (robotBounds.intersects(enemyBounds)) {
+			if (e.isAlive()) {
 				myBot.setAlive(false);
 				returnValue = true;
 			}
 		}
 		return returnValue;
 	}
-	
+
 	// @Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while (myBot.isAlive()) {
-			myBot.update();
-			if (myBot.isJumped()) {
-				currentSprite = characterJumped;
-			} else if (myBot.isJumped() == false && myBot.isDucked() == false) {
-				currentSprite = anim.getImage();
-			}
-			for (Projectile p : myBot.getProjectiles()) {
-				if (p.isVisible() == true) {
-					for (Enemy e : enemies) {
-						isEnemyHit(e, p);
+			if (myBot.isLevelFinished()) {
+				//while (true) {
+					if (!myBot.isJumped()) {
+						myBot.setSpeedX(0);
+						myBot.jump();
 					}
-					p.update();
-				} else {
-					if (myBot.getProjectiles().indexOf(p) != -1) {
-						myBot.getProjectiles().remove(p);
-						break;
+				//}
+			} 
+
+				createEnemy();
+				myBot.update();
+				if (myBot.isJumped()) {
+					currentSprite = characterJumped;
+				} else if (myBot.isJumped() == false
+						&& myBot.isDucked() == false) {
+					currentSprite = anim.getImage();
+				}
+				for (Projectile p : myBot.getProjectiles()) {
+					if (p.isVisible() == true) {
+						for (Enemy e : enemies) {
+							isEnemyHit(e, p);
+						}
+						p.update();
+					} else {
+						if (myBot.getProjectiles().indexOf(p) != -1) {
+							myBot.getProjectiles().remove(p);
+							break;
+						}
 					}
 				}
-			}
-			checkForFloat();
-			updateTiles();
-			for (Enemy e : enemies) {
-				isHeroHit(e);
-				e.update();
-			}
-			bg1.update();
-			bg2.update();
+				checkForFloat();
+				updateTiles();
+				for (Enemy e : enemies) {
+					isHeroHit(e);
+					e.update();
+				}
+				bg1.update();
+				bg2.update();
 
-			animate();
-			repaint();
-			try {
-				Thread.sleep(17);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+				animate();
+				repaint();
+				try {
+					Thread.sleep(17);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+	
 		}
 		myBot.setAlive(true);
 		this.start();
 	}
 
 	private boolean isFloating = false;
-	
-	private boolean checkForFloat(){
+
+	private boolean checkForFloat() {
 		boolean returnValue = false;
 		Rectangle bottom = myBot.getBottomBounds();
-		Rectangle augBottom = new Rectangle((int)bottom.getX(),(int)bottom.getY()+10, bottom.width, bottom.height);
+		Rectangle augBottom = new Rectangle((int) bottom.getX(),
+				(int) bottom.getY() + 10, bottom.width, bottom.height);
 		Boolean tileIntersects = false;
-		for(Tile t : tilearray){
-			
+		for (Tile t : tilearray) {
+
 			Rectangle tileBorder = t.getBounds();
-			if(tileBorder.intersects(augBottom)){
+			if (tileBorder.intersects(augBottom)) {
 				tileIntersects = true;
 				isFloating = false;
 				myBot.setFalling(false);
 			}
 		}
-		if(!tileIntersects && !myBot.isJumped()){
-			//And it isn't thanks to jumping so...
+		if (!tileIntersects && !myBot.isJumped()) {
+			// And it isn't thanks to jumping so...
 			myBot.jump(+10);
 			myBot.setFalling(true);
 			isFloating = true;
@@ -221,7 +257,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 		}
 		return returnValue;
 	}
-	
+
 	// @Override
 	public void keyPressed(KeyEvent e) {
 
@@ -315,6 +351,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 
 	private void updateTiles() {
 		for (Tile t : tilearray) {
+			for (Projectile p : myBot.getProjectiles()) {
+				isTileHit(t, p);
+			}
 			t.update(myBot);
 		}
 	}
@@ -329,42 +368,51 @@ public class StartingClass extends Applet implements Runnable, KeyListener {
 	public void paint(Graphics g) {
 		g.drawImage(background, bg1.getBgX(), bg1.getBgY(), this);
 		g.drawImage(background, bg2.getBgX(), bg2.getBgY(), this);
-
 		paintTiles(g);
 
 		for (Projectile p : myBot.getProjectiles()) {
 			g.setColor(Color.YELLOW);
 			g.fillRect(p.getX(), p.getY(), Projectile.WIDTH, Projectile.HEIGHT);
 			g.setColor(Color.RED);
-			g.drawRect(p.getBounds().x, p.getBounds().y, p.getBounds().width, p.getBounds().height);
+			g.drawRect(p.getBounds().x, p.getBounds().y, p.getBounds().width,
+					p.getBounds().height);
 		}
 
 		g.drawImage(currentSprite, myBot.getCenterX() - 61,
 				myBot.getCenterY() - 63, this);
-		
-		//DRAW COLLISION BOXES
-		//TODO: Remove
-//		Rectangle rightBounds = myBot.getRightBounds();
-//		Rectangle leftBounds = myBot.getLeftBounds();
-//		Rectangle bottomBounds = myBot.getBottomBounds();
-//		Rectangle innerRightBound = myBot.getInnerRightBounds();
-//		Rectangle topBound = myBot.getTopBounds();
-//		g.setColor(Color.RED);
-//		g.drawRect(rightBounds.x, rightBounds.y, rightBounds.width, rightBounds.height);
-//		g.setColor(Color.GREEN);
-//		g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width, bottomBounds.height);
-//		g.setColor(Color.BLACK);
-//		g.drawRect(innerRightBound.x, innerRightBound.y, innerRightBound.width, innerRightBound.height);
-//		g.setColor(Color.YELLOW);
-//		g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
-		//END Collision Boxes
+
+		g.setColor(Color.WHITE);
+		Font f = new Font("Score", Font.BOLD, 30);
+		g.setFont(f);
+		g.drawString(String.valueOf(myBot.getScore()), 40, 40);
+
+		// DRAW COLLISION BOXES
+		// TODO: Remove
+		// Rectangle rightBounds = myBot.getRightBounds();
+		// Rectangle leftBounds = myBot.getLeftBounds();
+		// Rectangle bottomBounds = myBot.getBottomBounds();
+		// Rectangle innerRightBound = myBot.getInnerRightBounds();
+		// Rectangle topBound = myBot.getTopBounds();
+		// g.setColor(Color.RED);
+		// g.drawRect(rightBounds.x, rightBounds.y, rightBounds.width,
+		// rightBounds.height);
+		// g.setColor(Color.GREEN);
+		// g.drawRect(bottomBounds.x, bottomBounds.y, bottomBounds.width,
+		// bottomBounds.height);
+		// g.setColor(Color.BLACK);
+		// g.drawRect(innerRightBound.x, innerRightBound.y,
+		// innerRightBound.width, innerRightBound.height);
+		// g.setColor(Color.YELLOW);
+		// g.drawRect(topBound.x, topBound.y, topBound.width, topBound.height);
+		// END Collision Boxes
 		for (Enemy e : enemies) {
-			if(e.isAlive()){
+			if (e.isAlive()) {
 				g.drawImage(hanim.getImage(), e.getxLocation() - 48,
-					e.getyLocation() - 48, this);
+						e.getyLocation() - 48, this);
 			}
-//			g.setColor(Color.RED);
-//			g.drawRect(e.getBounds().x, e.getBounds().y, e.getBounds().width, e.getBounds().height);
+			g.setColor(Color.RED);
+			g.drawRect(e.getBounds().x, e.getBounds().y, e.getBounds().width,
+					e.getBounds().height);
 		}
 
 	}

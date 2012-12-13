@@ -7,14 +7,17 @@ import com.gleason.game.environment.Background;
 import com.gleason.game.util.Collidable;
 import com.gleason.game.weapon.Projectile;
 
-public class Enemy implements Collidable {
+public abstract class Enemy implements Collidable {
 	protected int maxHealth, currentHealth, weaponPower, speedX, xLocation,
 			yLocation;
-	private static final int WIDTH = 96;
-	private static final int HEIGHT = 96;
+	
 	private boolean alive = true;
 	private Background bg = StartingClass.getBg1();
 
+	abstract int getWidth();
+	abstract int getHeight();
+	abstract int getPoints();
+	
 	public void update() {
 		xLocation += speedX;
 		speedX = bg.getSpeedX() * 5;
@@ -100,6 +103,7 @@ public class Enemy implements Collidable {
 					this.setAlive(false);
 					p.setVisible(false);
 					p.setUsed(true);
+					p.getMybot().addPoint();
 				}
 			}
 		}
@@ -112,7 +116,7 @@ public class Enemy implements Collidable {
 
 	public Rectangle getBounds() {
 		// TODO Auto-generated method stub
-		return new Rectangle(getxLocation() - (WIDTH / 2), getyLocation()
-				- (HEIGHT / 2), WIDTH, HEIGHT);
+		return new Rectangle(getxLocation() - (getWidth() / 2), getyLocation()
+				- (getHeight() / 2), getWidth(), getHeight());
 	}
 }
